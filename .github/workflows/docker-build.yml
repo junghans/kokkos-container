@@ -108,5 +108,12 @@ jobs:
         uses: Noelware/docker-manifest-action@b33ab348026b120a895167160f5605b0197f0862 #v0.4.3
         with:
           inputs: ghcr.io/junghans/kokkos:${{ steps.prep.outputs.version }}
-          images: ghcr.io/junghans/kokkos:${{ steps.prep.outputs.version }}-x64,ghcr.io/junghans/kokkos:${{ steps.tag.outputs.version }}-arm64
+          images: ghcr.io/junghans/kokkos:${{ steps.prep.outputs.version }}-x64,ghcr.io/junghans/kokkos:${{ steps.prep.outputs.version }}-arm64
+          push: ${{ github.repository_owner == 'kokkos' && ( github.event_name == 'push' ||  github.event_name == 'schedule' ) }}
+      - name: Create and push manifest images to Github Container Registry
+        if: github.repository_owner == 'junghans' && ( github.event_name == 'push' ||  github.event_name == 'schedule' )
+        uses: Noelware/docker-manifest-action@b33ab348026b120a895167160f5605b0197f0862 #v0.4.3
+        with:
+          inputs: kokkos/kokkos:${{ steps.prep.outputs.version }}
+          images: kokkos/kokkos:${{ steps.prep.outputs.version }}-x64,kokkos/kokkos:${{ steps.prep.outputs.version }}-arm64
           push: ${{ github.repository_owner == 'kokkos' && ( github.event_name == 'push' ||  github.event_name == 'schedule' ) }}
